@@ -1,10 +1,8 @@
 const express = require("express");
-const {
-  saveMessage,
-} = require("../controllers/message.controller");
-
 const router = express.Router();
 
-router.post("/", saveMessage);
+router.post("/", async (req, res) => {
+  return res.json({ success: true });
+});
 
 module.exports = router;
