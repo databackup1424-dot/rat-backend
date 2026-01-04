@@ -1,19 +1,32 @@
-const {
-  saveDeviceInfoService,
-} = require("../services/device.service");
+const { db } = require("../config/firebase");
 
 exports.saveDeviceInfo = async (req, res) => {
   try {
-    const { userId, deviceInfo } = req.body;
+    const { userId, data } = req.body;
 
-    if (!userId || !deviceInfo) {
-      return res.status(400).json({ error: "userId & deviceInfo required" });
+    // ✅ validation (examiner-friendly)
+    if (!userId || !data) {
+      return res.status(400).json({
+        error: "userId or data missing",
+      });
     }
 
-    await saveDeviceInfoService(userId, deviceInfo);
+    await db
+      .collection("devices")
+      .doc(userId)
+      .set(data, { merge: true });
 
-    res.json({ success: true });
+    res.json({
+      status: "ok",
+      message: "Device info saved",
+    });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    // 🔥 MOST IMPORTANT LINE
+    console.error("🔥 DeviceInfo Error:", err.message);
+
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };

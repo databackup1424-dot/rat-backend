@@ -1,21 +1,25 @@
-const {
-  saveNotificationService,
-} = require("../services/notification.service");
+const { db } = require("../config/firebase");
 
 exports.saveNotification = async (req, res) => {
   try {
-    const { userId, notification } = req.body;
+    const { userId, data } = req.body;
 
-    if (!userId || !notification) {
-      return res
-        .status(400)
-        .json({ error: "userId & notification required" });
+    if (!userId || !data) {
+      return res.status(400).json({ error: "Invalid payload" });
     }
 
-    await saveNotificationService(userId, notification);
+    await db
+      .collection("notifications")
+      .add({
+        userId,
+        ...data,
+        createdAt: new Date(),
+      });
 
-    res.json({ success: true });
+    res.json({ status: "ok" });
+
   } catch (err) {
+    console.error("🔥 Notification Error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };

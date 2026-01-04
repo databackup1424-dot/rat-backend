@@ -1,19 +1,25 @@
-const {
-  saveMessageService,
-} = require("../services/message.service");
+const { db } = require("../config/firebase");
 
 exports.saveMessage = async (req, res) => {
   try {
-    const { userId, message } = req.body;
+    const { userId, data } = req.body;
 
-    if (!userId || !message) {
-      return res.status(400).json({ error: "userId & message required" });
+    if (!userId || !data) {
+      return res.status(400).json({ error: "Invalid payload" });
     }
 
-    await saveMessageService(userId, message);
+    await db
+      .collection("messages")
+      .add({
+        userId,
+        ...data,
+        createdAt: new Date(),
+      });
 
-    res.json({ success: true });
+    res.json({ status: "ok" });
+
   } catch (err) {
+    console.error("🔥 Message Error:", err.message);
     res.status(500).json({ error: err.message });
   }
 };
