@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { db } = require("../config/firebase");
 
-// POST /api/messages
 router.post("/", async (req, res) => {
   try {
     const { userId, message } = req.body;
@@ -15,12 +14,13 @@ router.post("/", async (req, res) => {
     }
 
     await db
-      .collection("messages")
+      .collection("users")
       .doc(userId)
-      .collection("logs")
+      .collection("messages")
       .add({
         ...message,
-        createdAt: new Date(),
+        timestamp: new Date(),
+        status: "success",
       });
 
     return res.json({
