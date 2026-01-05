@@ -11,7 +11,10 @@ router.get("/users", async (req, res) => {
       ...doc.data()
     }));
 
-    res.json({ success: true, users });
+    res.json({
+      success: true,
+      users
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({
