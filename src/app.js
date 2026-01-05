@@ -8,6 +8,8 @@ app.use(express.json());
 
 const adminRoutes = require("./routes/admin.routes");
 app.use("/admin", adminRoutes);
+app.use("/admin", require("./routes/admin.users.routes"));
+
 
 // ROUTES
 app.use("/api/device", require("./routes/device.routes"));
