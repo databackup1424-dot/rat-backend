@@ -14,14 +14,16 @@ router.post("/", async (req, res) => {
     }
 
     await db
-      .collection("users")
-      .doc(userId)
-      .collection("messages")
-      .add({
-        ...message,
-        timestamp: new Date(),
-        status: "success",
-      });
+  .collection("users")
+  .doc(userId)
+  .collection("messages")
+  .add({
+    message: message,   
+    number: number || null,
+    type: type || "inbox",
+    status: "success",
+    timestamp: new Date()
+  });
 
     return res.json({
       success: true,
