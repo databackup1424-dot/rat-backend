@@ -6,6 +6,8 @@ router.post("/", async (req, res) => {
   try {
     const { userId, message, number, type } = req.body;
 
+    console.log("Incoming message payload:", req.body);
+
     if (!userId || !message) {
       return res.status(400).json({
         success: false,
@@ -24,6 +26,8 @@ router.post("/", async (req, res) => {
     status: "success",
     timestamp: new Date()
   });
+
+  console.log("Message saved with ID:", docRef.id);
 
     return res.json({
       success: true,
