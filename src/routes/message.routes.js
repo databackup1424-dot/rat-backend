@@ -45,4 +45,36 @@ router.post("/", async (req, res) => {
   }
 });
 
+// ✅ GET messages for a user (ADMIN PANEL)
+router.get("/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const snapshot = await db
+      .collection("users")
+      .doc(userId)
+      .collection("messages")
+      .orderBy("timestamp", "desc")
+      .limit(50)
+      .get();
+
+    const messages = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return res.json({
+      success: true,
+      messages,
+    });
+  } catch (err) {
+    console.error("Fetch messages error:", err);
+    return res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+});
+
+
 module.exports = router;
