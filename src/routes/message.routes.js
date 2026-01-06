@@ -8,6 +8,7 @@ router.post("/", async (req, res) => {
 
     console.log("Incoming message payload:", req.body);
 
+    // ✅ validation
     if (!userId || !message) {
       return res.status(400).json({
         success: false,
@@ -15,23 +16,25 @@ router.post("/", async (req, res) => {
       });
     }
 
-    await db
-  .collection("users")
-  .doc(userId)
-  .collection("messages")
-  .add({
-    message: message,   
-    number: number || null,
-    type: type || "inbox",
-    status: "success",
-    timestamp: new Date()
-  });
+    // ✅ IMPORTANT FIX: docRef define karo
+    const docRef = await db
+      .collection("users")
+      .doc(userId)
+      .collection("messages")
+      .add({
+        message: message,          // ✅ full text
+        number: number || null,
+        type: type || "inbox",
+        status: "success",
+        timestamp: new Date(),
+      });
 
-  console.log("Message saved with ID:", docRef.id);
+    console.log("Message saved with ID:", docRef.id);
 
     return res.json({
       success: true,
       message: "Message saved successfully",
+      id: docRef.id,
     });
   } catch (err) {
     console.error("Message save error:", err);
