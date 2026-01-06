@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// HEALTH CHECK
+app.get("/health", (req, res) => {
+  return res.json({ success: true, status: "ok" });
+});
+
 // ADMIN ROUTES
 app.use("/admin", require("./routes/admin.routes"));
 app.use("/admin", require("./routes/admin.users.routes"));
